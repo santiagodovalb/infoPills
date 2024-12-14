@@ -4,6 +4,7 @@ from database.models import Pill, SessionLocal, init_db
 from datetime import datetime
 
 from apscheduler.schedulers.background import BackgroundScheduler
+from utils.cleanup import cleanup_old_entries
 
 app = FastAPI()
 
