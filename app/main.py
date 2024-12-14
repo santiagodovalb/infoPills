@@ -67,3 +67,18 @@ def add_pill(color: str, dibujo: str, info: str, fecha: str, db: Session = Depen
     db.commit()
     db.refresh(new_pill)
     return {"message": "Pastilla añadida con éxito.", "pill": new_pill.id}
+
+# 5. Delete pill by color and dibujo
+@app.delete("/pills")
+def delete_pill(color: str, dibujo: str, db: Session = Depends(get_db)):
+    # Try to find the pill to delete
+    pill = db.query(Pill).filter(Pill.color == color, Pill.dibujo == dibujo).first()
+
+    # If pill is not found, raise a 404 error
+    if not pill:
+        raise HTTPException(status_code=404, detail="No se encontró pastilla de ese color y dibujo.")
+    
+    # If found, delete the pill
+    db.delete(pill)
+    db.commit()  # Commit changes to apply the deletion
+    return {"message": "Pastilla eliminada con éxito."}
