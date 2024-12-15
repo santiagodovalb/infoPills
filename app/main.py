@@ -84,15 +84,15 @@ def add_pill(color: str, dibujo: str, info: str, fecha: str, db: Session = Depen
     db.refresh(new_pill)
     return {"message": "Pastilla añadida con éxito.", "pill": new_pill.id}
 
-# 5. Delete pill by color and dibujo
-@app.delete("/pills")
-def delete_pill(color: str, dibujo: str, db: Session = Depends(get_db)):
+# 5. Delete pill by id
+@app.delete("/pills/{pill_id}")
+def delete_pill(pill_id: int, db: Session = Depends(get_db)):
     # Try to find the pill to delete
-    pill = db.query(Pill).filter(Pill.color == color, Pill.dibujo == dibujo).first()
+    pill = db.query(Pill).filter(Pill.id == pill_id).first()
 
     # If pill is not found, raise a 404 error
     if not pill:
-        raise HTTPException(status_code=404, detail="No se encontró pastilla de ese color y dibujo.")
+        raise HTTPException(status_code=404, detail="No se encontró pastilla con ese ID.")
     
     # If found, delete the pill
     db.delete(pill)
