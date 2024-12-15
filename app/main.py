@@ -98,3 +98,33 @@ def delete_pill(pill_id: int, db: Session = Depends(get_db)):
     db.delete(pill)
     db.commit()  # Commit changes to apply the deletion
     return {"message": "Pastilla eliminada con éxito."}
+
+    # 6. Edit pill by id
+    @app.put("/pills/{pill_id}")
+    def edit_pill(pill_id: int, color: str = None, dibujo: str = None, info: str = None, fecha: str = None, db: Session = Depends(get_db)):
+        # Try to find the pill to edit
+        pill = db.query(Pill).filter(Pill.id == pill_id).first()
+
+        # If pill is not found, raise a 404 error
+        if not pill:
+            raise HTTPException(status_code=404, detail="No se encontró pastilla con ese ID.")
+        
+        # Update the pill's attributes if provided
+        if color:
+            pill.color = color
+        if dibujo:
+            pill.dibujo = dibujo
+        if info:
+            pill.info = info
+        if fecha:
+            try:
+                # Accept dd/mm/yyyy format
+                parsed_date = datetime.strptime(fecha, "%d/%m/%Y").date()
+                pill.fecha = parsed_date
+            except ValueError:
+                raise HTTPException(status_code=400, detail="Fecha inválida.")
+        
+        # Commit changes to the database
+        db.commit()
+        db.refresh(pill)
+        return {"message": "Pastilla actualizada con éxito.", "pill": pill.id}
