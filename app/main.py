@@ -39,6 +39,12 @@ def get_db():
     finally:
         db.close()
 
+        # List all pills
+        @app.get("/pills")
+        def list_all_pills(db: Session = Depends(get_db)):
+            pills = db.query(Pill).all()
+            return pills
+
 # 1. List all pill colors
 @app.get("/pills/colores")
 def list_pill_colors(db: Session = Depends(get_db)):
