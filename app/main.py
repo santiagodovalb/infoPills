@@ -7,6 +7,8 @@ from datetime import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 from app.utils.cleanup import cleanup_old_entries
 
+app = FastAPI()
+
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
@@ -15,8 +17,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-app = FastAPI()
 
 scheduler = BackgroundScheduler()
 
