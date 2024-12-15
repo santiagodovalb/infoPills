@@ -43,6 +43,8 @@ def get_db():
 @app.get("/pills")
 def list_all_pills(db: Session = Depends(get_db)):
     pills = db.query(Pill).all()
+    for pill in pills:
+        pill.fecha = pill.fecha.strftime("%d/%m/%Y")
     return pills
 
 # 1. List all pill colors
